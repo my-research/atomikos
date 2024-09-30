@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  order-db:
+    image: postgres:14
+    container_name: order-db
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: orderuser
+      POSTGRES_PASSWORD: orderpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/init-order.sql:/docker-entrypoint-initdb.d/init.sql
+
+  delivery-db:
+    image: mysql:8
+    container_name: delivery-db
+    environment:
+      MYSQL_DATABASE: deliverydb
+      MYSQL_USER: deliveryuser
+      MYSQL_PASSWORD: deliverypassword
+      MYSQL_ROOT_PASSWORD: deliverypassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql/init-delivery.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  default:
+    driver: bridge
