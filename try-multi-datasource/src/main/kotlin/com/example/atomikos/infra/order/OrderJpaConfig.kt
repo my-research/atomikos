@@ -22,6 +22,7 @@ import javax.sql.DataSource
     transactionManagerRef = "orderTransactionManager"
 )
 class OrderJpaConfig {
+
     @Bean
     @ConfigurationProperties("spring.datasource.order")
     fun orderDataSourceProperties() = DataSourceProperties()
@@ -40,12 +41,9 @@ class OrderJpaConfig {
         @Qualifier("orderDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
 
-        val vendorAdapter = HibernateJpaVendorAdapter()
-        vendorAdapter.setGenerateDdl(true)
 
         val factory = LocalContainerEntityManagerFactoryBean()
         factory.dataSource = dataSource
-        factory.jpaVendorAdapter = vendorAdapter
         factory.setPackagesToScan("com.example.atomikos.infra.order")
         return factory
     }
