@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class AtomikosApplication
+class MyMultiDataSourceApplication
 
 fun main(args: Array<String>) {
-  runApplication<AtomikosApplication>(*args)
+  runApplication<MyMultiDataSourceApplication>(*args)
 }
