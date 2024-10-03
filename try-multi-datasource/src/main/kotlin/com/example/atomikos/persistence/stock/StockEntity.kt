@@ -13,5 +13,10 @@ data class StockEntity(
     val productId: Int,
 
     @Column(name = "quantity")
-    val quantity: Int,
-)
+    var quantity: Int,
+) {
+    fun decrease() {
+//        throw IllegalStateException("재고가 존재하지 않습니다")
+        this.quantity -= 1
+    }
+}

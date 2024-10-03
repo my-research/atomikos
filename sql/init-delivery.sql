@@ -10,5 +10,4 @@ CREATE TABLE IF NOT EXISTS stocks (
   quantity INT NOT NULL
 );
 
-INSERT INTO deliveries (delivery_name) VALUES ('첫 번째 배송'), ('두 번째 배송');
-INSERT INTO stocks (productId, quantity) VALUES (1, 100), (2, 200);
+INSERT INTO stocks (productId, quantity) VALUES (1, 100);

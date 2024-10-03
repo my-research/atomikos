@@ -40,6 +40,8 @@ class OrderJpaConfig {
      * @see
      * https://docs.spring.io/spring-data/jpa/reference/repositories/create-instances.html
      * https://stackoverflow.com/questions/48416927/spring-boot-required-a-bean-named-entitymanagerfactory-that-could-not-be-foun/54663039#54663039
+     *
+     * primary bean 이 중요함. query 도 primary 기준으로 setting 됨
      */
     @Bean
     @Primary
@@ -57,6 +59,7 @@ class OrderJpaConfig {
     }
 
     @Bean
+    @Primary
     fun orderTransactionManager(entityManagerFactory: EntityManagerFactory?): PlatformTransactionManager {
         val txManager = JpaTransactionManager()
         txManager.entityManagerFactory = entityManagerFactory
