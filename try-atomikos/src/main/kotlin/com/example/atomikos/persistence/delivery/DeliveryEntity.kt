@@ -1,4 +1,4 @@
-package com.example.atomikos.infra.delivery
+package com.example.atomikos.persistence.delivery
 
 import jakarta.persistence.*
 import java.time.LocalDateTime

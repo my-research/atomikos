@@ -1,4 +1,4 @@
-package com.example.atomikos.infra.order
+package com.example.atomikos.persistence.order
 
 import org.springframework.data.jpa.repository.JpaRepository
 

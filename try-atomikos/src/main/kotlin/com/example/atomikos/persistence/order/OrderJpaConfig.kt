@@ -1,4 +1,4 @@
-package com.example.atomikos.infra.delivery
+package com.example.atomikos.persistence.order
 
 import jakarta.persistence.EntityManagerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
@@ -17,40 +18,50 @@ import javax.sql.DataSource
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackageClasses = [DeliveryEntity::class],
-    entityManagerFactoryRef = "deliveryEntityManagerFactory",
-    transactionManagerRef = "deliveryTransactionManager"
+    basePackageClasses = [OrderEntity::class],
+    entityManagerFactoryRef = "orderEntityManagerFactory",
+    transactionManagerRef = "orderTransactionManager"
 )
-class DeliveryJpaConfig {
+class OrderJpaConfig {
 
+    // externalized property binding 을 통해 dataSourceProperty 를 setting
     @Bean
-    @ConfigurationProperties("spring.datasource.delivery")
-    fun deliveryDataSourceProperties() = DataSourceProperties()
+    @ConfigurationProperties("spring.datasource.order")
+    fun orderDataSourceProperties() = DataSourceProperties()
 
+    /**
+     * 앞서 주입받은 dataSource properties 를 기반으로 dataSource 생성
+     *
+     * for connection pool & manging connections
+     */
+    //
     @Bean
-    fun deliveryDataSource(): DataSource = deliveryDataSourceProperties()
+    fun orderDataSource(): DataSource = orderDataSourceProperties()
         .initializeDataSourceBuilder()
         .build()
 
+    /**
+     * @see
+     * https://docs.spring.io/spring-data/jpa/reference/repositories/create-instances.html
+     * https://stackoverflow.com/questions/48416927/spring-boot-required-a-bean-named-entitymanagerfactory-that-could-not-be-foun/54663039#54663039
+     */
     @Bean
-    fun deliveryEntityManagerFactory(
-        @Qualifier("deliveryDataSource") dataSource: DataSource?,
+    @Primary
+    fun orderEntityManagerFactory(
+        @Qualifier("orderDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
-
         val vendorAdapter = HibernateJpaVendorAdapter()
         vendorAdapter.setGenerateDdl(true)
 
         val factory = LocalContainerEntityManagerFactoryBean()
         factory.dataSource = dataSource
+        factory.setPackagesToScan("com.example.atomikos.infra.order")
         factory.jpaVendorAdapter = vendorAdapter
-        factory.setPackagesToScan("com.example.atomikos.infra.delivery")
         return factory
     }
 
     @Bean
-    fun deliveryTransactionManager(
-        @Qualifier("deliveryEntityManagerFactory") entityManagerFactory: EntityManagerFactory
-    ): PlatformTransactionManager {
+    fun orderTransactionManager(entityManagerFactory: EntityManagerFactory?): PlatformTransactionManager {
         val txManager = JpaTransactionManager()
         txManager.entityManagerFactory = entityManagerFactory
         return txManager
