@@ -44,7 +44,7 @@ class OrderJpaConfig {
      * primary bean 이 중요함. query 도 primary 기준으로 setting 됨
      */
     @Bean
-    @Primary
+//    @Primary
     fun orderEntityManagerFactory(
         @Qualifier("orderDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
@@ -59,8 +59,10 @@ class OrderJpaConfig {
     }
 
     @Bean
-    @Primary
-    fun orderTransactionManager(entityManagerFactory: EntityManagerFactory?): PlatformTransactionManager {
+//    @Primary
+    fun orderTransactionManager(
+        @Qualifier("orderEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+    ): PlatformTransactionManager {
         val txManager = JpaTransactionManager()
         txManager.entityManagerFactory = entityManagerFactory
         return txManager
@@ -90,6 +92,7 @@ class DeliveryJpaConfig {
         .build()
 
     @Bean
+    @Primary
     fun deliveryEntityManagerFactory(
         @Qualifier("deliveryDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
@@ -108,6 +111,7 @@ class DeliveryJpaConfig {
     }
 
     @Bean
+    @Primary
     fun deliveryTransactionManager(
         @Qualifier("deliveryEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager {

@@ -2,9 +2,11 @@ package com.example.atomikos.service
 
 import com.example.atomikos.persistence.order.OrderEntity
 import com.example.atomikos.persistence.order.OrderRepository
+import com.example.atomikos.persistence.stock.StockEntity
 import com.example.atomikos.persistence.stock.StockRepository
 import com.example.atomikos.util.logger
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FragileOrderService(
@@ -17,6 +19,7 @@ class FragileOrderService(
      *
      * stock 이 없으면 주문을 rollback
      */
+    @Transactional
     fun order(productId: Int) {
 
         // 1. create Order
@@ -30,6 +33,15 @@ class FragileOrderService(
         stock.decrease()
         stockRepository.save(stock)
         logger.info { "[stock] $stock 저장됨" }
+    }
+
+    fun order2(productId: Int) {
+        // 1. create Order
+        val order = OrderEntity(orderName = "$productId 의 주문")
+        orderRepository.save(order)
+
+        val randomNumber = (1..5000).random()
+        stockRepository.save(StockEntity(productId = randomNumber, quantity = 100))
     }
 
     private fun getStock(productId: Int) = stockRepository.findByProductId(productId).orElseThrow {
