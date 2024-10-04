@@ -1,8 +1,9 @@
 package com.example.atomikos
 
 import com.example.atomikos.persistence.order.OrderRepository
-import com.example.atomikos.persistence.stock.StockRepository
+import com.example.atomikos.persistence.StockRepository
 import com.example.atomikos.service.FragileOrderService
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +26,7 @@ class MyMultiDataSourceApplicationTests {
     val beforeOrderCount = orderRepository.count()
     val beforeOrderStockQuantity = stockRepository.findByProductId(1).get().quantity
 
-    sut.order(1)
+    sut.order(1, false)
 
     val afterOrderCount = orderRepository.count()
     val afterOrderStockQuantity = stockRepository.findByProductId(1).get().quantity
@@ -35,16 +36,16 @@ class MyMultiDataSourceApplicationTests {
   }
 
   @Test
-  fun `혹시 몰라 stock 도 insert 해봄`() {
+  fun `주문에 실패하면 order 도 rollback 되고 stock 도 rollback 되어야 함`() {
     val beforeOrderCount = orderRepository.count()
-    val beforeOrderStockQuantity = stockRepository.count()
+    val beforeOrderStockQuantity = stockRepository.findByProductId(1).get().quantity
 
-    sut.order2(1)
+    sut.order(1, true)
 
     val afterOrderCount = orderRepository.count()
-    val afterOrderStockQuantity = stockRepository.count()
+    val afterOrderStockQuantity = stockRepository.findByProductId(1).get().quantity
 
-    afterOrderCount shouldBe beforeOrderCount + 1
-    afterOrderStockQuantity shouldBe beforeOrderStockQuantity + 1
+    afterOrderCount shouldBe beforeOrderCount
+    afterOrderStockQuantity shouldBe beforeOrderStockQuantity
   }
 }

@@ -1,4 +1,4 @@
-package com.example.atomikos.persistence.stock
+package com.example.atomikos.persistence
 
 import jakarta.persistence.*
 
@@ -16,7 +16,6 @@ data class StockEntity(
     var quantity: Int,
 ) {
     fun decrease() {
-//        throw IllegalStateException("재고가 존재하지 않습니다")
         this.quantity -= 1
     }
 }

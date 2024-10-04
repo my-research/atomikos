@@ -1,4 +1,4 @@
-package com.example.atomikos.persistence.stock
+package com.example.atomikos.persistence
 
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional

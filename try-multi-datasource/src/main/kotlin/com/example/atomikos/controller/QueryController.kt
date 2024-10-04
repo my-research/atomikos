@@ -2,7 +2,7 @@ package com.example.atomikos.controller
 
 import com.example.atomikos.persistence.delivery.DeliveryRepository
 import com.example.atomikos.persistence.order.OrderRepository
-import com.example.atomikos.persistence.stock.StockRepository
+import com.example.atomikos.persistence.StockRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

@@ -2,7 +2,7 @@ package com.example.atomikos.persistence
 
 import com.example.atomikos.persistence.delivery.DeliveryEntity
 import com.example.atomikos.persistence.order.OrderEntity
-import com.example.atomikos.persistence.stock.StockEntity
+import com.example.atomikos.persistence.StockEntity
 import jakarta.persistence.EntityManagerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
@@ -44,7 +44,7 @@ class OrderJpaConfig {
      * primary bean 이 중요함. query 도 primary 기준으로 setting 됨
      */
     @Bean
-//    @Primary
+    @Primary
     fun orderEntityManagerFactory(
         @Qualifier("orderDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
@@ -59,7 +59,7 @@ class OrderJpaConfig {
     }
 
     @Bean
-//    @Primary
+    @Primary
     fun orderTransactionManager(
         @Qualifier("orderEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager {
@@ -92,7 +92,7 @@ class DeliveryJpaConfig {
         .build()
 
     @Bean
-    @Primary
+//    @Primary
     fun deliveryEntityManagerFactory(
         @Qualifier("deliveryDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
@@ -111,7 +111,7 @@ class DeliveryJpaConfig {
     }
 
     @Bean
-    @Primary
+//    @Primary
     fun deliveryTransactionManager(
         @Qualifier("deliveryEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager {
