@@ -11,16 +11,16 @@ object PersistenceConfiguration {
 
     private fun initOrder(): AtomikosDataSourceBean {
         val dataSource = AtomikosDataSourceBean()
-        dataSource.uniqueResourceName = "orderDataSource"
+        dataSource.uniqueResourceName = "postgres"
+        dataSource.xaDataSourceClassName = "org.postgresql.xa.PGXADataSource"
 
         val properties = Properties()
         properties.setProperty("url", "jdbc:postgresql://localhost:5432/orderdb")
         properties.setProperty("user", "orderuser")
         properties.setProperty("password", "orderpassword")
         properties.setProperty("driverClassName", "org.postgresql.Driver")
-        dataSource.xaProperties = properties
-        dataSource.xaDataSourceClassName = "org.postgresql.xa.PGXADataSource"
 
+        dataSource.xaProperties = properties
         return dataSource
     }
 

@@ -18,6 +18,8 @@ repositories {
 dependencies {
   implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+  implementation("jakarta.transaction:jakarta.transaction-api:2.0.1")
+
   implementation("com.atomikos:transactions-jta:6.0.0")
   implementation("com.atomikos:transactions-jdbc:6.0.0")
 

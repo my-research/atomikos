@@ -4,10 +4,12 @@ import com.atomikos.jdbc.AtomikosDataSourceBean
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Statement
+import java.util.*
 
 class StockRepository(private val dataSource: AtomikosDataSourceBean) {
 
     fun save(stock: StockEntity): Long {
+
         val query = "INSERT INTO stocks (product_id, quantity) VALUES (?, ?)"
         var generatedId: Long = -1
 
