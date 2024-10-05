@@ -1,5 +1,4 @@
-package com.example.atomikos.persistence
-
+package com.example.atomikos.persistence.stock
 
 data class StockEntity(
     val id: Long? = null,

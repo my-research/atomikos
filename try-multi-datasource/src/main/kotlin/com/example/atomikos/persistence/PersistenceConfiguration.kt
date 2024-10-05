@@ -96,7 +96,6 @@ class DeliveryJpaConfig {
     fun deliveryEntityManagerFactory(
         @Qualifier("deliveryDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
-
         val vendorAdapter = HibernateJpaVendorAdapter()
         vendorAdapter.setGenerateDdl(true)
 
