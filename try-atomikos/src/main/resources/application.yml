@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    order:
+      url: jdbc:postgresql://localhost:5432/orderdb
+      username: orderuser
+      password: orderpassword
+      driver-class-name: org.postgresql.Driver
+    stock:
+      url: jdbc:mysql://localhost:3306/deliverydb
+      username: deliveryuser
+      password: deliverypassword
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true

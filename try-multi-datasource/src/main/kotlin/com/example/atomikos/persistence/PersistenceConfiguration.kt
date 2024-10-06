@@ -2,7 +2,7 @@ package com.example.atomikos.persistence
 
 import com.example.atomikos.persistence.delivery.DeliveryEntity
 import com.example.atomikos.persistence.order.OrderEntity
-import com.example.atomikos.persistence.StockEntity
+import com.example.atomikos.persistence.stock.StockEntity
 import jakarta.persistence.EntityManagerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties

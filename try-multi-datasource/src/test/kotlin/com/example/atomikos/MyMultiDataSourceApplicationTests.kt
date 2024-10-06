@@ -1,9 +1,8 @@
 package com.example.atomikos
 
 import com.example.atomikos.persistence.order.OrderRepository
-import com.example.atomikos.persistence.StockRepository
+import com.example.atomikos.persistence.stock.StockRepository
 import com.example.atomikos.service.FragileOrderService
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,4 +1,4 @@
-package com.example.atomikos.persistence
+package com.example.atomikos.persistence.stock
 
 import jakarta.persistence.*
 

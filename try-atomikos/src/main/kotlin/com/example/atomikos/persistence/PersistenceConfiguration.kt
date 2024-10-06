@@ -1,41 +1,119 @@
 package com.example.atomikos.persistence
 
-import com.atomikos.jdbc.AtomikosDataSourceBean
-import java.util.*
+import com.example.atomikos.persistence.order.OrderEntity
+import com.example.atomikos.persistence.stock.StockEntity
+import jakarta.persistence.EntityManagerFactory
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.orm.jpa.JpaTransactionManager
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.annotation.EnableTransactionManagement
+import javax.sql.DataSource
 
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+    basePackageClasses = [OrderEntity::class],
+    entityManagerFactoryRef = "orderEntityManagerFactory",
+    transactionManagerRef = "orderTransactionManager"
+)
+class OrderJpaConfig {
 
-object PersistenceConfiguration {
+    @Bean
+    @ConfigurationProperties("spring.datasource.order")
+    fun orderDataSourceProperties() = DataSourceProperties()
 
-    val orderDataSource = initOrder()
-    val stockDataSource = initStock()
+    @Bean
+    fun orderDataSource(): DataSource = orderDataSourceProperties()
+        .initializeDataSourceBuilder()
+        .build()
 
-    private fun initOrder(): AtomikosDataSourceBean {
-        val dataSource = AtomikosDataSourceBean()
-        dataSource.uniqueResourceName = "postgres"
-        dataSource.xaDataSourceClassName = "org.postgresql.xa.PGXADataSource"
+    /**
+     * @see
+     * https://docs.spring.io/spring-data/jpa/reference/repositories/create-instances.html
+     * https://stackoverflow.com/questions/48416927/spring-boot-required-a-bean-named-entitymanagerfactory-that-could-not-be-foun/54663039#54663039
+     *
+     * primary bean 이 중요함. query 도 primary 기준으로 setting 됨
+     */
+    @Bean
+    @Primary
+    fun orderEntityManagerFactory(
+        @Qualifier("orderDataSource") dataSource: DataSource?,
+    ): LocalContainerEntityManagerFactoryBean {
+        val vendorAdapter = HibernateJpaVendorAdapter()
+        vendorAdapter.setGenerateDdl(true)
 
-        val properties = Properties()
-        properties.setProperty("url", "jdbc:postgresql://localhost:5432/orderdb")
-        properties.setProperty("user", "orderuser")
-        properties.setProperty("password", "orderpassword")
-        properties.setProperty("driverClassName", "org.postgresql.Driver")
-
-        dataSource.xaProperties = properties
-        return dataSource
+        val factory = LocalContainerEntityManagerFactoryBean()
+        factory.dataSource = dataSource
+        factory.setPackagesToScan("com.example.atomikos.persistence.order")
+        factory.jpaVendorAdapter = vendorAdapter
+        return factory
     }
 
-    private fun initStock(): AtomikosDataSourceBean {
-        val dataSource = AtomikosDataSourceBean()
-        dataSource.uniqueResourceName = "deliveryDataSource"
+    @Bean
+    @Primary
+    fun orderTransactionManager(
+        @Qualifier("orderEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+    ): PlatformTransactionManager {
+        val txManager = JpaTransactionManager()
+        txManager.entityManagerFactory = entityManagerFactory
+        return txManager
+    }
+}
 
-        val properties = Properties()
-        properties.setProperty("url", "jdbc:mysql://localhost:3306/deliverydb")
-        properties.setProperty("user", "deliveryuser")
-        properties.setProperty("password", "deliverypassword")
-        properties.setProperty("driverClassName", "com.mysql.cj.jdbc.Driver")
-        dataSource.xaProperties = properties
-        dataSource.xaDataSourceClassName = "com.mysql.cj.jdbc.MysqlXADataSource"
+/**
+ * delivery & stock
+ */
 
-        return dataSource
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+    basePackageClasses = [StockEntity::class],
+    entityManagerFactoryRef = "stockEntityManagerFactory",
+    transactionManagerRef = "stockTransactionManager"
+)
+class StockJpaConfig {
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.stock")
+    fun stockDataSourceProperties() = DataSourceProperties()
+
+    @Bean
+    fun stockDataSource(): DataSource = stockDataSourceProperties()
+        .initializeDataSourceBuilder()
+        .build()
+
+    @Bean
+//    @Primary
+    fun stockEntityManagerFactory(
+        @Qualifier("stockDataSource") dataSource: DataSource?,
+    ): LocalContainerEntityManagerFactoryBean {
+        val vendorAdapter = HibernateJpaVendorAdapter()
+        vendorAdapter.setGenerateDdl(true)
+
+        val factory = LocalContainerEntityManagerFactoryBean()
+        factory.dataSource = dataSource
+        factory.jpaVendorAdapter = vendorAdapter
+        factory.setPackagesToScan(
+            "com.example.atomikos.persistence.stock"
+        )
+        return factory
+    }
+
+    @Bean
+//    @Primary
+    fun stockTransactionManager(
+        @Qualifier("stockEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+    ): PlatformTransactionManager {
+        val txManager = JpaTransactionManager()
+        txManager.entityManagerFactory = entityManagerFactory
+        return txManager
     }
 }
