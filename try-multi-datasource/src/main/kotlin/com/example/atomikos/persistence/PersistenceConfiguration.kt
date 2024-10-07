@@ -69,14 +69,56 @@ class OrderJpaConfig {
     }
 }
 
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+    basePackageClasses = [StockEntity::class],
+    entityManagerFactoryRef = "stockEntityManagerFactory",
+    transactionManagerRef = "stockTransactionManager"
+)
+class StockJpaConfig {
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.stock")
+    fun stockDataSourceProperties() = DataSourceProperties()
+
+    @Bean
+    fun stockDataSource(): DataSource = stockDataSourceProperties()
+        .initializeDataSourceBuilder()
+        .build()
+
+    @Bean
+    fun stockEntityManagerFactory(
+        @Qualifier("stockDataSource") dataSource: DataSource?,
+    ): LocalContainerEntityManagerFactoryBean {
+        val vendorAdapter = HibernateJpaVendorAdapter()
+        vendorAdapter.setGenerateDdl(true)
+
+        val factory = LocalContainerEntityManagerFactoryBean()
+        factory.dataSource = dataSource
+        factory.setPackagesToScan("com.example.atomikos.persistence.stock")
+        factory.jpaVendorAdapter = vendorAdapter
+        return factory
+    }
+
+    @Bean
+    fun stockTransactionManager(
+        @Qualifier("stockEntityManagerFactory") entityManagerFactory: EntityManagerFactory
+    ): PlatformTransactionManager {
+        val txManager = JpaTransactionManager()
+        txManager.entityManagerFactory = entityManagerFactory
+        return txManager
+    }
+}
+
 /**
- * delivery & stock
+ * delivery
  */
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackageClasses = [DeliveryEntity::class, StockEntity::class],
+    basePackageClasses = [DeliveryEntity::class],
     entityManagerFactoryRef = "deliveryEntityManagerFactory",
     transactionManagerRef = "deliveryTransactionManager"
 )
@@ -92,7 +134,6 @@ class DeliveryJpaConfig {
         .build()
 
     @Bean
-//    @Primary
     fun deliveryEntityManagerFactory(
         @Qualifier("deliveryDataSource") dataSource: DataSource?,
     ): LocalContainerEntityManagerFactoryBean {
@@ -104,13 +145,11 @@ class DeliveryJpaConfig {
         factory.jpaVendorAdapter = vendorAdapter
         factory.setPackagesToScan(
             "com.example.atomikos.persistence.delivery",
-            "com.example.atomikos.persistence.stock"
         )
         return factory
     }
 
     @Bean
-//    @Primary
     fun deliveryTransactionManager(
         @Qualifier("deliveryEntityManagerFactory") entityManagerFactory: EntityManagerFactory
     ): PlatformTransactionManager {

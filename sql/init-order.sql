@@ -3,3 +3,5 @@ CREATE TABLE IF NOT EXISTS orders (
   order_name VARCHAR(255) NOT NULL,
   order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER SYSTEM SET max_prepared_transactions = 100;

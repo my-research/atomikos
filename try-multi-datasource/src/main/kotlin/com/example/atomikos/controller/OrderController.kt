@@ -15,7 +15,7 @@ class OrderController(
     fun placeOrder(@RequestBody body: Map<String, String>): ResponseEntity<String> {
 
         val productId = body["productId"]!!
-        service.order(productId.toInt())
+        service.order(productId.toInt(), true)
 
         return ResponseEntity.ok("successfully ordered")
     }

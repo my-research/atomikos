@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FragileOrderService(
-    private val stockRepository: StockRepository,
     private val orderRepository: OrderRepository,
+    private val stockRepository: StockRepository,
 ) {
 
     /**

@@ -5,6 +5,11 @@ spring:
       username: orderuser
       password: orderpassword
       driver-class-name: org.postgresql.Driver
+    stock:
+      url: jdbc:postgresql://localhost:5433/stockdb
+      username: stockuser
+      password: stockpassword
+      driver-class-name: org.postgresql.Driver
     delivery:
       url: jdbc:mysql://localhost:3306/deliverydb
       username: deliveryuser

@@ -9,7 +9,7 @@ data class StockEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column(name = "productId")
+    @Column(name = "product_id")
     val productId: Int,
 
     @Column(name = "quantity")
